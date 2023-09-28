@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import { Comment } from "../Comment";
 import { Avatar } from "../Avatar";
-import { comment } from "postcss";
 import { useState } from "react";
 
 interface PostProps {
@@ -39,7 +37,17 @@ export function Post({ author, content, publishAt }: PostProps) {
     setNewCommentText("");
   }
 
-  function handleNewCommentChange() {
+  function deleteComment(commentToDelete: string) {
+    const commentWithoutDeleteOne = comments.filter((comment) => {
+      return comment !== commentToDelete;
+    });
+
+    setComments(commentWithoutDeleteOne);
+  }
+
+  function handleNewCommentChange(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
     setNewCommentText(event?.target.value);
   }
 
@@ -106,7 +114,13 @@ export function Post({ author, content, publishAt }: PostProps) {
 
       <div>
         {comments.map((comment, index) => {
-          return <Comment key={index} content={comment} />;
+          return (
+            <Comment
+              key={index}
+              content={comment}
+              onDeleteComment={deleteComment}
+            />
+          );
         })}
       </div>
     </article>

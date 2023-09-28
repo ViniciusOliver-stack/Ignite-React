@@ -1,11 +1,17 @@
 import { ThumbsUp, Trash } from "@phosphor-icons/react";
 import { Avatar } from "../Avatar";
+import { comment } from "postcss";
 
 interface CommentProps {
   content: string;
+  onDeleteComment: (comment: string) => void;
 }
 
-export function Comment({ content }: CommentProps) {
+export function Comment({ content, onDeleteComment }: CommentProps) {
+  function handleDeleteComment() {
+    onDeleteComment(content);
+  }
+
   return (
     <div className="mt-6 flex gap-4">
       <Avatar
@@ -28,6 +34,7 @@ export function Comment({ content }: CommentProps) {
 
             <button
               title="Deletar comentário"
+              onClick={handleDeleteComment}
               className="text-gray_color-400 hover:text-red-400"
             >
               <Trash size={24} />
