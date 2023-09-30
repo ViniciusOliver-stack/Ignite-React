@@ -21,6 +21,8 @@ export function Post({ author, content, publishAt }: PostProps) {
   const [comments, setComments] = useState(["Post incrível!"]);
   const [newCommentText, setNewCommentText] = useState("");
 
+  const isNewCommentEmpty = newCommentText.length === 0;
+
   const publishedDateFormatted = format(publishAt, "d 'de' LLLL	'às' HH:mm'h'", {
     locale: ptBR,
   });
@@ -45,9 +47,14 @@ export function Post({ author, content, publishAt }: PostProps) {
     setComments(commentWithoutDeleteOne);
   }
 
+  function handleNewCommentInvalid() {
+    event?.target.setCustomValidity("Ops, esse campo é obrigatório!");
+  }
+
   function handleNewCommentChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
+    event.target.setCustomValidity("");
     setNewCommentText(event?.target.value);
   }
 
@@ -95,6 +102,8 @@ export function Post({ author, content, publishAt }: PostProps) {
         <strong className="text-gray_color-400">Deixe seu feedback</strong>
         <div className="group">
           <textarea
+            required
+            onInvalid={handleNewCommentInvalid}
             onChange={handleNewCommentChange}
             name="comment"
             value={newCommentText}
@@ -105,6 +114,7 @@ export function Post({ author, content, publishAt }: PostProps) {
             <button
               type="submit"
               className="px-6 py-4 rounded-lg border-0 bg-green_color-500 text-white font-bold cursor-pointer hover:bg-green_color-900 transition-all duration-75"
+              disabled={isNewCommentEmpty}
             >
               Publicar
             </button>
