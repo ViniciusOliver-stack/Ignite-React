@@ -1,19 +1,15 @@
-import Image from "next/image";
+import { ImgHTMLAttributes } from "react";
 
-interface AvatarProps {
-  src: string;
+interface AvatarProps extends ImgHTMLAttributes<HTMLImageElement> {
   hasBorder: boolean;
 }
 
-export function Avatar({ src, hasBorder }: AvatarProps) {
+export function Avatar({ hasBorder = true, ...props }: AvatarProps) {
   return (
-    <Image
-      src={src}
-      alt="Foto de perfil"
-      width={500}
-      height={500}
+    <img
       className={`w-16 h-16 rounded-lg border-4 border-gray_color-800 border-l-gray_color-800 object-cover 
       ${hasBorder ? "outline outline-2 outline-green_color-500" : ""}`}
+      {...props}
     />
   );
 }

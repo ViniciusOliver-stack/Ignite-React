@@ -2,7 +2,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
 import { Comment } from "../Comment";
 import { Avatar } from "../Avatar";
-import { useState } from "react";
+import { FormEvent, InvalidEvent, useState } from "react";
 
 interface PostProps {
   author: {
@@ -32,7 +32,7 @@ export function Post({ author, content, publishAt }: PostProps) {
     addSuffix: true,
   });
 
-  function handleCreateNewComment() {
+  function handleCreateNewComment(event: FormEvent) {
     event?.preventDefault();
 
     setComments([...comments, newCommentText]);
@@ -47,7 +47,7 @@ export function Post({ author, content, publishAt }: PostProps) {
     setComments(commentWithoutDeleteOne);
   }
 
-  function handleNewCommentInvalid() {
+  function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>) {
     event?.target.setCustomValidity("Ops, esse campo é obrigatório!");
   }
 

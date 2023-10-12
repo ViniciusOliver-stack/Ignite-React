@@ -1,6 +1,5 @@
 import { ThumbsUp, Trash } from "@phosphor-icons/react";
 import { Avatar } from "../Avatar";
-import { comment } from "postcss";
 import { useState } from "react";
 
 interface CommentProps {
@@ -14,6 +13,7 @@ export function Comment({ content, onDeleteComment }: CommentProps) {
   function handleLikeComment() {
     setLikeCount(likeCount + 1);
   }
+
   function handleDeleteComment() {
     onDeleteComment(content);
   }
@@ -31,7 +31,7 @@ export function Comment({ content, onDeleteComment }: CommentProps) {
               <strong className="text-sm">Vinicius Oliveira</strong>
               <time
                 title="21 de Setembro às 20:51"
-                dateTime="2023-09-21 20:51:00"
+                dateTime="2023-09-21 20:51:00" 
                 className="text-xs text-gray_color-500"
               >
                 Cerca de 1h atrás
