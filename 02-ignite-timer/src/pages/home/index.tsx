@@ -32,7 +32,7 @@ export function Home() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
     reset,
   } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
