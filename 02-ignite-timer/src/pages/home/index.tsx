@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Play } from '@phosphor-icons/react'
+import { HandPalm, Play } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as zod from 'zod'
@@ -9,7 +9,7 @@ const newCycleFormValidationSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa.'),
   minutesAmount: zod.coerce
     .number()
-    .min(5, 'O ciclo precisa ser de no mínimo 5 minutos.')
+    .min(1, 'O ciclo precisa ser de no mínimo 5 minutos.')
     .max(60, 'O ciclo precisa ser de no máximo 60 minutos.'),
 })
 
@@ -20,6 +20,8 @@ interface Cycle {
   task: string
   minutesAmount: number
   startDate: Date
+  interruptedDate?: Date
+  finishedDate?: Date
 }
 
 export function Home() {
@@ -51,22 +53,43 @@ export function Home() {
 
   useEffect(() => {
     let interval: number
+
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate),
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate,
         )
+
+        if (secondsDifference >= totalSeconds) {
+          setCycles((state) =>
+            state.map((cycle) => {
+              if (cycle.id === activeCycleId) {
+                return { ...cycle, finishedDate: new Date() }
+              } else {
+                return cycle
+              }
+            }),
+          )
+
+          setAmountSecondsPassed(totalSeconds)
+          clearInterval(interval)
+        } else {
+          setAmountSecondsPassed(secondsDifference)
+        }
       }, 1000)
     }
 
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle])
+  }, [activeCycle, totalSeconds, activeCycleId])
 
   useEffect(() => {
     if (activeCycle) {
       document.title = `Ignite Timer | ${minutes}:${seconds}`
+    } else {
+      document.title = `Ignite Timer`
     }
   }, [activeCycle, minutes, seconds])
 
@@ -77,6 +100,7 @@ export function Home() {
       task: data.task,
       minutesAmount: data.minutesAmount,
       startDate: new Date(),
+      finishedDate: new Date(),
     }
 
     setCycles((state) => [...state, newCycle])
@@ -84,6 +108,20 @@ export function Home() {
     setAmountSecondsPassed(0)
 
     reset()
+  }
+
+  function handleInterruptCycle() {
+    setCycles((state) =>
+      state.map((cycle) => {
+        if (cycle.id === activeCycleId) {
+          return { ...cycle, interruptedDate: new Date() }
+        } else {
+          return cycle
+        }
+      }),
+    )
+
+    setActiveCycleId(null)
   }
 
   return (
@@ -100,6 +138,7 @@ export function Home() {
             className="bg-transparent h-10 border-b-2 border-b-gray_color-500 font-bold text-lg px-2 placeholder:text-gray_color-500 flex-1 focus:outline-none focus:border-b-green_color-500"
             placeholder="Dê um nome para o seu projeto"
             list="task-list"
+            disabled={!!activeCycle}
             {...register('task')}
           />
 
@@ -115,6 +154,7 @@ export function Home() {
             id="minutesAmount"
             className="bg-transparent h-10 border-b-2 border-b-gray_color-500 font-bold text-lg px-2 placeholder:text-gray_color-500 w-16 focus:outline-none focus:border-b-green_color-500"
             placeholder="00"
+            disabled={!!activeCycle}
             {...register('minutesAmount')}
           />
 
@@ -137,14 +177,25 @@ export function Home() {
           </span>
         </div>
 
-        <button
-          type="submit"
-          className="w-full p-4 rounded-lg flex items-center justify-center gap-2 text-bold cursor-pointer bg-green_color-500 text-gray_color-100 hover:bg-green_color-700 transition-all duration-150 disabled:bg-green_color-500/30 disabled:cursor-not-allowed disabled:text-gray_color-500"
-          disabled={isSubmitDisabled}
-        >
-          <Play size={24} />
-          Começar
-        </button>
+        {activeCycle ? (
+          <button
+            type="button"
+            className="w-full p-4 rounded-lg flex items-center justify-center gap-2 text-bold cursor-pointer bg-red_color-500 text-gray_color-100 hover:bg-red_color-500/70 transition-all duration-150 disabled:bg-red_color-500/30 disabled:cursor-not-allowed disabled:text-gray_color-500"
+            onClick={handleInterruptCycle}
+          >
+            <HandPalm size={24} />
+            Interromper
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="w-full p-4 rounded-lg flex items-center justify-center gap-2 text-bold cursor-pointer bg-green_color-500 text-gray_color-100 hover:bg-green_color-700 transition-all duration-150 disabled:bg-green_color-500/30 disabled:cursor-not-allowed disabled:text-gray_color-500"
+            disabled={isSubmitDisabled}
+          >
+            <Play size={24} />
+            Começar
+          </button>
+        )}
       </form>
     </div>
   )
