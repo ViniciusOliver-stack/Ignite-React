@@ -1,10 +1,10 @@
 import { useContext } from 'react'
+import { formatDistanceToNow } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
 import { CyclesContext } from '../../contexts/CyclesContext'
 
 export function History() {
   const { cycles } = useContext(CyclesContext)
-
-  console.log(cycles)
 
   return (
     <main className="flex-1 md:p-14 flex flex-col">
@@ -40,7 +40,10 @@ export function History() {
                     {cycle.minutesAmount} minutos
                   </td>
                   <td className="bg-gray_color-600 border-t-4 border-gray_color-700 p-4 text-sm">
-                    {cycle.startDate.toISOString()}
+                    {formatDistanceToNow(cycle.startDate, {
+                      addSuffix: true,
+                      locale: ptBR,
+                    })}
                   </td>
                   <td className="bg-gray_color-600 border-t-4 border-gray_color-700 p-4 text-sm">
                     {cycle.finishedDate && (
