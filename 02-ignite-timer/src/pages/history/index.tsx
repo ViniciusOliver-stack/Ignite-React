@@ -1,7 +1,12 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { CyclesContext } from '../../contexts/CyclesContext'
 
 export function History() {
   const [colorStatus, setColorStatus] = useState('Concluído')
+
+  const { cycles } = useContext(CyclesContext)
+
+  console.log(cycles)
 
   const getStatusColor = () => {
     switch (colorStatus) {
