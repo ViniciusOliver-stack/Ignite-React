@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header"
+import { SearchForm } from "@/components/SearchForm"
 import { Summary } from "@/components/Summary"
 
 export function Transactions() {
@@ -8,7 +9,8 @@ export function Transactions() {
       <Summary />
 
       <div className="w-full max-w-[1120px] my-16 m-auto px-6">
-        <table className="w-full border-separate border-spacing-y-2 text-white">
+        <SearchForm />
+        <table className="w-full border-separate border-spacing-y-2 text-white mt-10">
           <tbody>
             <tr>
               <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-l-md">
