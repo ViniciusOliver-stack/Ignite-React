@@ -5,7 +5,10 @@
 
 * {
   font-family: "Roboto", sans-serif;
-  background: "#121212";
+}
+
+body {
+  background: #202024;
 }
 
 @layer base {
