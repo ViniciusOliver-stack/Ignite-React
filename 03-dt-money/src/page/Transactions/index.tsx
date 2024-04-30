@@ -1,8 +1,16 @@
 import { Header } from "@/components/Header"
 import { SearchForm } from "@/components/SearchForm"
 import { Summary } from "@/components/Summary"
+import { useTransactionStore } from "@/store/TransactionsStore"
+import { useEffect } from "react"
 
 export function Transactions() {
+  const { transactions, loadTransactions } = useTransactionStore()
+
+  useEffect(() => {
+    loadTransactions()
+  }, [loadTransactions])
+
   return (
     <div>
       <Header />
@@ -12,44 +20,26 @@ export function Transactions() {
         <SearchForm />
         <table className="w-full border-separate border-spacing-y-2 text-white mt-10">
           <tbody>
-            <tr>
-              <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-l-md">
-                Desenvolvimento de site
-              </td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700">
-                <PriceHighLight variant="income">R$ 509,90</PriceHighLight>
-              </td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700">Venda</td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-r-md">
-                15/04/2022
-              </td>
-            </tr>
-
-            <tr>
-              <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-l-md">
-                Desenvolvimento de plataforma
-              </td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700">
-                <PriceHighLight variant="income">R$ 12.000,90</PriceHighLight>
-              </td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700">Venda</td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-r-md">
-                15/04/2022
-              </td>
-            </tr>
-
-            <tr>
-              <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-l-md">
-                Plano do Canva
-              </td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700">
-                <PriceHighLight variant="outcome">R$ - 59,90</PriceHighLight>
-              </td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700">Venda</td>
-              <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-r-md">
-                15/04/2022
-              </td>
-            </tr>
+            {transactions.map((transaction) => {
+              return (
+                <tr>
+                  <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-l-md">
+                    {transaction.description}
+                  </td>
+                  <td className="w-[50%] px-5 py-8 bg-gray-700">
+                    <PriceHighLight variant={transaction.type}>
+                      R$ {transaction.price}
+                    </PriceHighLight>
+                  </td>
+                  <td className="w-[50%] px-5 py-8 bg-gray-700">
+                    {transaction.category}
+                  </td>
+                  <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-r-md">
+                    {transaction.created_at}
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>

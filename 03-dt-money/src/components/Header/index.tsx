@@ -10,9 +10,14 @@ import { Button } from "../ui/button"
 
 import { ArrowCircleDown, ArrowCircleUp } from "phosphor-react"
 import { useState } from "react"
+import { useTransactionStore } from "@/store/TransactionsStore"
 
 export function Header() {
   const [typeTransaction, setTypeTransaction] = useState<string>("")
+
+  const { transactions } = useTransactionStore()
+
+  console.log(transactions)
 
   return (
     <>
