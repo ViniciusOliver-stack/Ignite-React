@@ -1,3 +1,7 @@
+import { useState } from "react"
+import * as zod from "zod"
+import { useForm } from "react-hook-form"
+
 import {
   Dialog,
   DialogContent,
@@ -9,15 +13,30 @@ import {
 import { Button } from "../ui/button"
 
 import { ArrowCircleDown, ArrowCircleUp } from "phosphor-react"
-import { useState } from "react"
-import { useTransactionStore } from "@/store/TransactionsStore"
+
+const newTransactionSchema = zod.object({
+  description: zod.string(),
+  price: zod.number(),
+  category: zod.string(),
+  type: zod.enum(["income", "outcome"]),
+})
+
+type NewTransactionFromInputs = zod.infer<typeof newTransactionSchema>
 
 export function Header() {
   const [typeTransaction, setTypeTransaction] = useState<string>("")
 
-  const { transactions } = useTransactionStore()
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<NewTransactionFromInputs>()
 
-  console.log(transactions)
+  const handleSubmitNewTransaction = async (data: NewTransactionFromInputs) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    console.log(data)
+  }
 
   return (
     <>
@@ -37,18 +56,24 @@ export function Header() {
             <DialogContent className="bg-[#202024] text-white border-none">
               <DialogHeader className="">
                 <DialogTitle>Nova transação</DialogTitle>
-                <form className="pt-8 flex flex-col gap-4">
+                <form
+                  className="pt-8 flex flex-col gap-4"
+                  onSubmit={handleSubmit(handleSubmitNewTransaction)}
+                >
                   <input
+                    {...register("description")}
                     type="text"
                     placeholder="Descrição"
                     className="w-full rounded-md bg-gray-900 p-4 gray-300 placeholder:text-gray-500 focus:outline-none"
                   />
                   <input
+                    {...register("price", { valueAsNumber: true })} //Estamos convertendo para uma number
                     type="number"
                     placeholder="Valor"
                     className="w-full rounded-md bg-gray-900 p-4 gray-300 placeholder:text-gray-500 focus:outline-none"
                   />
                   <input
+                    {...register("category")}
                     type="text"
                     placeholder="Categoria"
                     className="w-full rounded-md bg-gray-900 p-4 gray-300 placeholder:text-gray-500 focus:outline-none"
@@ -93,7 +118,10 @@ export function Header() {
                     </li>
                   </ul>
 
-                  <button className="h-[58px] border-none bg-green-700 py-3 rounded-md mt-6 cursor-pointer hover:bg-green-800 hover:text-white transition-all">
+                  <button
+                    className="h-[58px] border-none bg-green-700 py-3 rounded-md mt-6 cursor-pointer hover:bg-green-800 hover:text-white transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                    disabled={isSubmitting}
+                  >
                     Cadastrar
                   </button>
                 </form>
