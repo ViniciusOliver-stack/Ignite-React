@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header"
 import { SearchForm } from "@/components/SearchForm"
 import { Summary } from "@/components/Summary"
+import { dateFormatter, priceFormatter } from "@/lib/formatter"
 import { useTransactionStore } from "@/store/TransactionsStore"
 import { useEffect } from "react"
 
@@ -22,20 +23,21 @@ export function Transactions() {
           <tbody>
             {transactions.map((transaction) => {
               return (
-                <tr>
+                <tr key={transaction.id}>
                   <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-l-md">
                     {transaction.description}
                   </td>
                   <td className="w-[50%] px-5 py-8 bg-gray-700">
                     <PriceHighLight variant={transaction.type}>
-                      R$ {transaction.price}
+                      {transaction.type === "outcome" && "- "}
+                      {priceFormatter.format(transaction.price)}
                     </PriceHighLight>
                   </td>
                   <td className="w-[50%] px-5 py-8 bg-gray-700">
                     {transaction.category}
                   </td>
                   <td className="w-[50%] px-5 py-8 bg-gray-700 rounded-r-md">
-                    {transaction.created_at}
+                    {dateFormatter.format(new Date(transaction.created_at))}
                   </td>
                 </tr>
               )
