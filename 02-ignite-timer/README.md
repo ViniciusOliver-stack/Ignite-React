@@ -11,7 +11,6 @@
 
 - [Visão Geral](#visão-geral)
 - [Tecnologias](#tecnologias)
-- [Como Contribuir](#como-contribuir)
 - [Licença](#licença)
 
 ## 🔭 Visão Geral
